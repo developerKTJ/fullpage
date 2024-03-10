@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>cookierun-kingdom</title>
+  <link rel="icon" href="images/logo_icon.png" type="image/png">
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/animate.css">
+  <link rel="stylesheet" href="css/colorbox.css">
+  <link rel="stylesheet" href="css/fullpage.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/owl/owl.carousel.min.css">
+  <link rel="stylesheet" href="css/owl/owl.theme.default.min.css">
+  <script src="js/jquery-3.1.1.min.js"></script>
+  <script src="js/jquery.fullPage.js"></script>
+  <script src="js/owl.carousel.min.js"></script>
+  <script src="js/jquery.nicescroll.min.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    window.onload = function(){
+    var ifrw = (ifr.contentWindow) ? ifr.contentWindow : (ifr.contentDocument.document) ? ifr.contentDocument.document : ifr.contentDocument;
+    }
+    $(function(){
+      // fullpage
+      $("#fullpage").fullpage({
+        menu:"#topMenu", //메뉴지정
+        anchors:["m1st","m2st","m3st","m4st","m5st","m6st"], //이동지정
+        navigation:true,
+        scrollingSpeed:1000,
+        onLeave:function(origin,destination,direction,andchorslink,index){
+          console.log(direction);
+          console.log(origin);
+          console.log(destination);
+          $(".modal").hide();
+          $(".page5 .modalWrap").hide();
+          // jquery modal close
+          var iframeSrc = $(".page5 .modal.active iframe").attr("src");
+          $(".page5 .modal.active iframe").attr("src",iframeSrc);
+          console.log(iframeSrc);
+          $(".page5 .modal").removeClass("active");
+          if(destination == 1){$("#fp-nav span").css("background","#FFFBDC")};
+          if(destination == 2){$("#fp-nav span").css("background","#C18243")};
+          if(destination == 3 || destination == 5){$("#fp-nav span").css("background","#FFF3CD")};
+          if(destination == 4){$("#fp-nav span").css("background","#C4A893")};
+          if(destination == 6){$("#fp-nav span").css({"background":"#191C24","transition":"1s"})};
+          if(direction == "down" && destination > 2){
+            $(".page2, .page3").css("background-color","#594D46");
+          };
+          if(direction == "up" && destination < 3){
+            $(".page2, .page3").css("background-color","#302A24");
+          };
+          if(direction == "down" && destination == 6){
+            $(".page5, .page6").css("background-color","#191c24");
+          };
+          if(direction == "up"){
+            $(".page5, .page6").css("background-color","#463E3A");
+          };
+        },
+        afterLoad:function(andchorslink,index){
+          $(".enTitle").removeClass("animated fadeInDown");
+          $(".page" + index + " .enTitle").addClass("animated fadeInDown");
+          $(".koTitle").removeClass("animated fadeInUp");
+          $(".page" + index + " .koTitle").addClass("animated fadeInUp");
+          $(".border img").removeClass("animated fadeIn");
+          $(".page" + index + " .border img").addClass("animated fadeIn aniD02");
+          $(".page2 .menu").removeClass("animated slideInLeft1");
+          $(".page" + index + " .menu").addClass("animated slideInLeft1");
+          $(".page3 li").removeClass("animated fadeInUp");
+          $(".page" + index + " li").addClass("animated fadeInUp aniD02");
+          $(".page4 .backCloud, .page4 .frontCloud").removeClass("aniCl");
+          $(".page" + index + " .backCloud, .page" + index + " .frontCloud").addClass("aniCl");
+          $(".page4 .ch").removeClass("aniP5");
+          $(".page" + index + " .chWrap .ch").addClass("aniP5");
+        }
+      });
+      // owl1
+      $('.page2 .owl-carousel').owlCarousel({
+      loop:true,
+      margin:0,
+      nav:false,
+      dots:true,
+      URLhashListener:true,
+      responsive:{0:{items:1}}
+      });
+      $('.next').click(function() {
+        $('.owl-carousel').trigger('next.owl.carousel');
+      });
+      $('.prev').click(function() {
+        $('.page2 .owl-carousel').trigger('prev.owl.carousel');
+      });
+      $('.page2 .owl-carousel').on('changed.owl.carousel', function(event) {
+        var item = $(".page2 button.active").index();
+        console.log(item);
+        $(".menuWrap div").removeClass("active").eq(item).addClass("active");
+      });
+
+      // tabMenu
+      $(".cardWrap").eq(0).show();
+      $(".tabMenu li").click(function(){
+        var now = $(this).index();
+        console.log(now);
+        $(".tabMenu li").removeClass("active").eq(now).addClass("active");
+        $(".cardWrap").hide().removeClass("active").eq(now).fadeIn().addClass("active");
+      });
+
+      // cardmodal
+      $(".card").click(function(){
+        var cardNum = $(this).index();
+        $(".cardWrap.active .modal").removeClass("active").eq(cardNum).fadeIn().addClass("active");
+        var scrollH = $(".cardWrap.active .modal.active .chTxtBg").height();
+        console.log(scrollH);
+        $(".cardWrap.active .modal.active .scrollWrap").height(scrollH);
+        $("#fp-nav").hide();
+      });
+
+      // modal close
+      $(".xBox").click(function(){
+        $(".modal").hide();
+        $(".page5 .modalWrap").hide();
+        $("#fp-nav").show();
+        // var iframeSrc = $(".page5 .modal.active iframe").attr("src");
+        // $(".page5 .modal.active iframe").attr("src",iframeSrc);
+        // console.log(iframeSrc);
+        var x = $(".page5 .modal.active iframe").get(0);
+        console.log(x);
+        x.contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');
+        $(".page5 .modal").removeClass("active");
+      });
+      // cardmodal scroll
+      $(window).resize(function(){
+        var scrollH = $(".cardWrap.active .modal.active .chTxtBg").height();
+        console.log(scrollH);
+        $(".cardWrap.active .modal.active .scrollWrap").height(scrollH);
+      });
+
+      // scroll
+      $(".storyTxt").niceScroll({
+        cursorborder:'none',
+        cursorcolor:'transparent',
+        scrollspeed: 400
+      });
+
+      // mediamodal
+      $(".media").click(function(){
+        var mediaNum = $(this).index();
+        console.log(mediaNum);
+        $(".page5 .modalWrap").show();
+        $(".page5 .modal").eq(mediaNum).fadeIn().addClass("active");
+        $("#fp-nav").hide();
+      });
+
+
+
+        });
+  </script>
+</head>
+<body>
+  <nav id="navTop">
+    <div class="container">
+      <ul class="clearfix" id="topMenu">
+        <li data-menuanchor="m1st"><a href="#m1st"><img src="images/flat_logo_ko.png" alt=""></a></li>
+        <li data-menuanchor="m2st"><a href="#m2st" class="col_fff">게임소개</a></li>
+        <li data-menuanchor="m3st"><a href="#m3st" class="col_fff">캐릭터</a></li>
+        <li data-menuanchor="m4st"><a href="#m4st" class="col_fff">세계관</a></li>
+        <li data-menuanchor="m5st"><a href="#m5st" class="col_fff">미디어</a></li>
+        <li><a target="_blank" href="https://game.devplay.com/coupon/ck/ko" class="col_fff">쿠폰입력</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div id="fullpage">
+    <div class="section page1" data-anchor="m1st">
+      <video class="bgv" src="images/cookierun.mp4" loop muted data-autoplay draggable="true"></video>
+      <div class="overlayer poCen"></div>
+      <img class="logo poCen" src="images/logo_ko.png" alt="">
+      <div class="storeWrap poXCen tac clearfix">
+        <a class="storeLink" target="_blank" rel="noopener" href="https://play.google.com/store/apps/details?id=com.devsisters.ck" class="css-1mgotue"><img src="images/store_googleplay.svg"></a>
+        <a class="storeLink" target="_blank" rel="noopener" href="https://onesto.re/0000751155" class="css-1mgotue"><img src="images/store_one.svg"></a>
+        <a class="storeLink" target="_blank" rel="noopener" href="https://apps.apple.com/kr/app/id1509450845" class="css-1mgotue"><img src="images/store_app.svg"></a>
+      </div>
+      <div class="scrollWrap poXCen">
+        <a href="#m2st">
+          <svg width="44" height="64" viewBox="0 0 44 59" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <style>@keyframes bounce{0%,to{transform:translateY(0)}50%{transform:translateY(5px)}}@keyframes bounceFadeOut{0%,to{opacity:.6;transform:translateY(0)}50%{opacity:.3;transform:translateY(5px)}}.button_svg__triangle{animation-name:bounce;animation-duration:1.5s;animation-delay:0s;animation-timing-function:ease;animation-iteration-count:infinite}</style><g opacity="0.8"><path class="button_svg__triangle" d="M18 24h8.403l-4.201 6L18 24z" fill="#FFE895" fill-opacity="0.6"></path><path class="button_svg__triangle" d="M4 16.995h36.5L22.225 42 4 16.995zM0 15l22.225 30L44 15H0z" fill="#FFE895" fill-opacity="0.6"></path><path d="M12.595 40.155l9.63 13.45 9.63-13.45h2.11L22.225 56l-11.74-15.845h2.11z" fill="#FFE895" fill-opacity="0.6" style="animation-name:bounceFadeOut;animation-duration:1.5s;animation-delay:0s;animation-timing-function:ease;animation-iteration-count:infinite"></path><path d="M3.624 10.156c1.812 0 2.952-1.08 2.952-2.46 0-1.308-.816-1.908-1.824-2.352l-1.272-.54c-.672-.288-1.464-.624-1.464-1.524 0-.828.684-1.344 1.704-1.344.84 0 1.488.324 2.028.84l.528-.636c-.6-.636-1.5-1.08-2.556-1.08-1.56 0-2.712.96-2.712 2.292 0 1.284.972 1.884 1.788 2.232l1.272.564c.84.372 1.5.672 1.5 1.62 0 .9-.732 1.512-1.932 1.512-.936 0-1.824-.432-2.46-1.116l-.6.684a4.103 4.103 0 003.048 1.308zm7.966 0c1.14 0 1.992-.456 2.676-1.26l-.552-.624c-.576.648-1.224 1.008-2.076 1.008-1.728 0-2.808-1.428-2.808-3.696 0-2.256 1.128-3.648 2.844-3.648.768 0 1.368.336 1.824.84l.552-.648a3.225 3.225 0 00-2.388-1.068c-2.22 0-3.852 1.728-3.852 4.548 0 2.844 1.608 4.548 3.78 4.548zm5.337-8.136h1.536c1.416 0 2.196.432 2.196 1.632 0 1.176-.78 1.74-2.196 1.74h-1.536V2.02zM21.883 10l-2.268-3.888c1.236-.276 2.04-1.08 2.04-2.46 0-1.8-1.248-2.436-3.036-2.436h-2.688V10h.996V6.208h1.644L20.767 10h1.116zm4.764.156c2.184 0 3.72-1.776 3.72-4.584 0-2.796-1.537-4.512-3.72-4.512-2.172 0-3.708 1.716-3.708 4.512 0 2.808 1.535 4.584 3.707 4.584zm0-.876c-1.62 0-2.688-1.452-2.688-3.708 0-2.244 1.067-3.636 2.688-3.636 1.632 0 2.7 1.392 2.7 3.636 0 2.256-1.069 3.708-2.7 3.708zm5.655.72h4.872v-.84h-3.876V1.216h-.996V10zm6.434 0h4.872v-.84h-3.876V1.216h-.996V10z" fill="#ADA06E"></path></g>
+          </svg>
+        </a>
+        <svg viewBox="0 0 1 67" fill="none" xmlns="http://www.w3.org/2000/svg" class="scrollLine poXCen"><style>@keyframes fadeOut{0%,to{opacity:.6}50%{opacity:.3}}</style><path stroke="url(#line_svg__paint0_linear)" style="animation-name:fadeOut;animation-duration:1.5s;animation-delay:0s;animation-timing-function:ease;animation-iteration-count:infinite" d="M.5 0v67"></path><defs><linearGradient id="line_svg__paint0_linear" x1="0" y1="33.5" x2="0" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#ADA06E"></stop><stop offset="1" stop-color="#ADA06E" stop-opacity="0"></stop></linearGradient></defs>
+        </svg>
+      </div>
+    </div>
+    <div class="section page2" data-anchor="m2st">
+      <div class="container">
+        <div class="titleWrap poXCen tac">
+          <p class="enTitle">COOKIERUN KINGDOM</p>
+          <h2 class="koTitle">게임소개</h2>
+        </div>
+        <div class="border">
+          <img class="leftTop" src="images/frame.svg" alt="">
+          <img class="rightTop" src="images/frame.svg" alt="">
+        </div>
+        <div class="content">
+          <div class="owl-btn poYCen">
+            <img class="prev cuP" src="images/btn.svg" alt="">
+            <img class="next cuP" src="images/btn.svg" alt="">
+          </div>
+          <div class="menuWrap poYCen">
+            <div class="menu n1st poXCen cuP active">
+              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                   viewBox="0 0 136 66.4" style="enable-background:new 0 0 136 66.4;" xml:space="preserve">
+                  <style type="text/css">
+                    .st0{fill:#775533;}
+                  </style>
+                  <g>
+                    <g>
+                      <path class="st0" d="M130.8,61.9H5.3c-0.4,0-0.8-0.3-0.8-0.8V5.3c0-0.4,0.3-0.8,0.8-0.8h125.5c0.4,0,0.8,0.3,0.8,0.8v55.8
+                        C131.6,61.6,131.3,61.9,130.8,61.9z M6.1,60.4h124V6.1H6.1V60.4z"/>
+                    </g>
+                    <g>
+                      <path class="st0" d="M121.4,66.5H14.8c-0.4,0-0.8-0.3-0.8-0.8c0-7.3-6-13.3-13.3-13.3c-0.4,0-0.8-0.3-0.8-0.8V14.8
+                        C0,14.4,0.3,14,0.8,14C8.1,14,14,8.1,14,0.8C14,0.3,14.4,0,14.8,0h106.6c0.4,0,0.8,0.3,0.8,0.8c0,7.3,6,13.3,13.3,13.3
+                        c0.4,0,0.8,0.3,0.8,0.8v36.9c0,0.4-0.3,0.8-0.8,0.8c-7.3,0-13.3,6-13.3,13.3C122.1,66.1,121.8,66.5,121.4,66.5z M15.5,65h105.1
+                        c0.4-7.6,6.5-13.6,14-14V15.5c-7.6-0.4-13.6-6.5-14-14H15.5c-0.4,7.6-6.5,13.6-14,14v35.4C9.1,51.3,15.1,57.4,15.5,65z"/>
+                    </g>
+                  </g>
+                </svg>
+              <a class="menuName" href="#battle">전투</a>
+            </div>
+            <div class="menu n2st poXCen cuP aniD02">
+              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                   viewBox="0 0 136 66.4" style="enable-background:new 0 0 136 66.4;" xml:space="preserve">
+                  <style type="text/css">
+                    .st0{fill:#775533;}
+                  </style>
+                  <g>
+                    <g>
+                      <path class="st0" d="M130.8,61.9H5.3c-0.4,0-0.8-0.3-0.8-0.8V5.3c0-0.4,0.3-0.8,0.8-0.8h125.5c0.4,0,0.8,0.3,0.8,0.8v55.8
+                        C131.6,61.6,131.3,61.9,130.8,61.9z M6.1,60.4h124V6.1H6.1V60.4z"/>
+                    </g>
+                    <g>
+                      <path class="st0" d="M121.4,66.5H14.8c-0.4,0-0.8-0.3-0.8-0.8c0-7.3-6-13.3-13.3-13.3c-0.4,0-0.8-0.3-0.8-0.8V14.8
+                        C0,14.4,0.3,14,0.8,14C8.1,14,14,8.1,14,0.8C14,0.3,14.4,0,14.8,0h106.6c0.4,0,0.8,0.3,0.8,0.8c0,7.3,6,13.3,13.3,13.3
+                        c0.4,0,0.8,0.3,0.8,0.8v36.9c0,0.4-0.3,0.8-0.8,0.8c-7.3,0-13.3,6-13.3,13.3C122.1,66.1,121.8,66.5,121.4,66.5z M15.5,65h105.1
+                        c0.4-7.6,6.5-13.6,14-14V15.5c-7.6-0.4-13.6-6.5-14-14H15.5c-0.4,7.6-6.5,13.6-14,14v35.4C9.1,51.3,15.1,57.4,15.5,65z"/>
+                    </g>
+                  </g>
+                </svg>
+              <a class="menuName" href="#adventure">모험</a>
+            </div>
+            <div class="menu n3st poXCen cuP aniD04">
+              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                   viewBox="0 0 136 66.4" style="enable-background:new 0 0 136 66.4;" xml:space="preserve">
+                  <style type="text/css">
+                    .st0{fill:#775533;}
+                  </style>
+                  <g>
+                    <g>
+                      <path class="st0" d="M130.8,61.9H5.3c-0.4,0-0.8-0.3-0.8-0.8V5.3c0-0.4,0.3-0.8,0.8-0.8h125.5c0.4,0,0.8,0.3,0.8,0.8v55.8
+                        C131.6,61.6,131.3,61.9,130.8,61.9z M6.1,60.4h124V6.1H6.1V60.4z"/>
+                    </g>
+                    <g>
+                      <path class="st0" d="M121.4,66.5H14.8c-0.4,0-0.8-0.3-0.8-0.8c0-7.3-6-13.3-13.3-13.3c-0.4,0-0.8-0.3-0.8-0.8V14.8
+                        C0,14.4,0.3,14,0.8,14C8.1,14,14,8.1,14,0.8C14,0.3,14.4,0,14.8,0h106.6c0.4,0,0.8,0.3,0.8,0.8c0,7.3,6,13.3,13.3,13.3
+                        c0.4,0,0.8,0.3,0.8,0.8v36.9c0,0.4-0.3,0.8-0.8,0.8c-7.3,0-13.3,6-13.3,13.3C122.1,66.1,121.8,66.5,121.4,66.5z M15.5,65h105.1
+                        c0.4-7.6,6.5-13.6,14-14V15.5c-7.6-0.4-13.6-6.5-14-14H15.5c-0.4,7.6-6.5,13.6-14,14v35.4C9.1,51.3,15.1,57.4,15.5,65z"/>
+                    </g>
+                  </g>
+                </svg>
+              <a class="menuName" href="#kingdom">왕국</a>
+            </div>
+            <div class="menu n4st poXCen cuP aniD06">
+              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                   viewBox="0 0 136 66.4" style="enable-background:new 0 0 136 66.4;" xml:space="preserve">
+                  <style type="text/css">
+                    .st0{fill:#775533;}
+                  </style>
+                  <g>
+                    <g>
+                      <path class="st0" d="M130.8,61.9H5.3c-0.4,0-0.8-0.3-0.8-0.8V5.3c0-0.4,0.3-0.8,0.8-0.8h125.5c0.4,0,0.8,0.3,0.8,0.8v55.8
+                        C131.6,61.6,131.3,61.9,130.8,61.9z M6.1,60.4h124V6.1H6.1V60.4z"/>
+                    </g>
+                    <g>
+                      <path class="st0" d="M121.4,66.5H14.8c-0.4,0-0.8-0.3-0.8-0.8c0-7.3-6-13.3-13.3-13.3c-0.4,0-0.8-0.3-0.8-0.8V14.8
+                        C0,14.4,0.3,14,0.8,14C8.1,14,14,8.1,14,0.8C14,0.3,14.4,0,14.8,0h106.6c0.4,0,0.8,0.3,0.8,0.8c0,7.3,6,13.3,13.3,13.3
+                        c0.4,0,0.8,0.3,0.8,0.8v36.9c0,0.4-0.3,0.8-0.8,0.8c-7.3,0-13.3,6-13.3,13.3C122.1,66.1,121.8,66.5,121.4,66.5z M15.5,65h105.1
+                        c0.4-7.6,6.5-13.6,14-14V15.5c-7.6-0.4-13.6-6.5-14-14H15.5c-0.4,7.6-6.5,13.6-14,14v35.4C9.1,51.3,15.1,57.4,15.5,65z"/>
+                    </g>
+                  </g>
+                </svg>
+              <a class="menuName" href="#cookie">쿠키</a>
+            </div>
+            <div class="menu n5st poXCen cuP aniD08">
+              <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                   viewBox="0 0 136 66.4" style="enable-background:new 0 0 136 66.4;" xml:space="preserve">
+                  <style type="text/css">
+                    .st0{fill:#775533;}
+                  </style>
+                  <g>
+                    <g>
+                      <path class="st0" d="M130.8,61.9H5.3c-0.4,0-0.8-0.3-0.8-0.8V5.3c0-0.4,0.3-0.8,0.8-0.8h125.5c0.4,0,0.8,0.3,0.8,0.8v55.8
+                        C131.6,61.6,131.3,61.9,130.8,61.9z M6.1,60.4h124V6.1H6.1V60.4z"/>
+                    </g>
+                    <g>
+                      <path class="st0" d="M121.4,66.5H14.8c-0.4,0-0.8-0.3-0.8-0.8c0-7.3-6-13.3-13.3-13.3c-0.4,0-0.8-0.3-0.8-0.8V14.8
+                        C0,14.4,0.3,14,0.8,14C8.1,14,14,8.1,14,0.8C14,0.3,14.4,0,14.8,0h106.6c0.4,0,0.8,0.3,0.8,0.8c0,7.3,6,13.3,13.3,13.3
+                        c0.4,0,0.8,0.3,0.8,0.8v36.9c0,0.4-0.3,0.8-0.8,0.8c-7.3,0-13.3,6-13.3,13.3C122.1,66.1,121.8,66.5,121.4,66.5z M15.5,65h105.1
+                        c0.4-7.6,6.5-13.6,14-14V15.5c-7.6-0.4-13.6-6.5-14-14H15.5c-0.4,7.6-6.5,13.6-14,14v35.4C9.1,51.3,15.1,57.4,15.5,65z"/>
+                    </g>
+                  </g>
+                </svg>
+              <a class="menuName" href="#pvp">PVP</a>
+            </div>
+          </div>
+          <div class="sliderWarp poYCen">
+            <div class="owl-carousel owl-theme owl-loaded">
+              <img class="item" src="images/page2_battle.png" alt="" data-hash="battle">
+              <img class="item" src="images/page2_adventure.png" alt="" data-hash="adventure">
+              <img class="item" src="images/page2_kingdom.png" alt="" data-hash="kingdom">
+              <img class="item" src="images/page2_cookie.png" alt="" data-hash="cookie">
+              <img class="item" src="images/page2_pvp.png" alt="" data-hash="pvp">
+            </div>
+            <img class="sliderCover" src="images/sliderCover.png" alt="">
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="section page3" data-anchor="m3st">
+      <div class="container">
+        <div class="titleWrap poXCen tac">
+          <p class="enTitle">COOKIERUN KINGDOM</p>
+          <h2 class="koTitle">CHARACTERS</h2>
+        </div>
+        <div class="border">
+          <img class="leftTop" src="images/frame2.svg" alt="">
+          <img class="rightTop" src="images/frame2.svg" alt="">
+        </div>
+        <div class="content">
+          <div class="tabMenuWrap">
+            <ul class="tabMenu tac fwb clearfix">
+              <li class="cuP active">
+                <p>영웅쿠키</p>
+              </li>
+              <li class="cuP aniD02">
+                <p>용감한 쿠키와 친구들</p>
+              </li>
+              <li class="cuP aniD04">
+                <p>전설쿠키</p>
+              </li>
+              <li class="cuP aniD06">
+                <p>악당쿠키</p>
+              </li>
+            </ul>
+          </div>
+          <div class="tabWrap">
+            <div class="cardWrap n1st poYCen clearfix active">
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_hr_pure1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">HERO</h4>
+                  <h4 class="main">퓨어바닐라</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_hr_hollyberry1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">HERO</h4>
+                  <h4 class="main">홀리베리</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_hr_golden1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">HERO</h4>
+                  <h4 class="main">골드치즈</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_hr_dark1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">HERO</h4>
+                  <h4 class="main">다크카카오</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_hr_white1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">HERO</h4>
+                  <h4 class="main">세인트릴리</h4>
+                </div>
+              </div>
+              <div class="modalWrap">
+                <div class="modal n1st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_hr_pure2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">영웅쿠키</h4>
+                        <h2 class="pb5">퓨어바닐라 쿠키</h2>
+                        <h4 class="pb20">성우. 김예림</h4>
+                        <p>자연의 축복을 듬뿍 받은 우유크림과 향긋한 바닐라 열매가 들어간 아주 포근한 쿠키. 사르르 부드러워 어디에나 잘 어울리는 바닐라처럼, 친절하고 상냥한 퓨어바닐라 쿠키와는 누구나 친구가 될 수 있다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n2st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_hr_hollyberry2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">영웅쿠키</h4>
+                        <h2 class="pb5">홀리베리 쿠키</h2>
+                        <h4 class="pb20">성우. 이새아</h4>
+                        <p>이 쿠키의 선명한 붉은 빛을 보라. 세상에서 가장 뜨거운 햇빛을 받고 자란 베리나무, 그중에서도 유독 짙은 빛깔의 열매를 엄선해 넣었다! 그 빛깔부터 어찌나 열정적이고 뜨거운지, 만나는 쿠키마다 진한 우정을 나누지 않고서야 못 배기는 쿠키가 되었다고.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n3st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_hr_golden2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">영웅쿠키</h4>
+                        <h2 class="pb5">골드치즈 쿠키</h2>
+                        <h4 class="pb20">성우. 김연우</h4>
+                        <p>흘러넘칠 정도로 탐욕스런 황금 치즈를 잔뜩 넣어 만든 금색의 쿠키. 풍미 가득한 치즈 기둥, 윤기 좔좔 황금 금고, 눈부신 골드치즈 조각상까지… 온통 황금을 덧발라 번쩍거리는 골드치즈 왕국에서도 가장 높고 반짝이는 곳을 독차지했다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n4st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_hr_dark2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">영웅쿠키</h4>
+                        <h2 class="pb5">다크카카오 쿠키</h2>
+                        <h4 class="pb20">성우. 정승욱</h4>
+                        <p>눈보라가 휘몰아치는 절벽 끝에서 자란 다크카카오 열매를 건조한 겨울 바람에 한 번 더 말렸더니 쓰디쓴 카카오닙스가 되었다. 반죽이 얼어버릴 정도로 추운 곳에서 자라나서인지 단맛이라고는 전혀 없이 차갑고 고독해진 쿠키.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n5st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_hr_white2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">영웅쿠키</h4>
+                        <h2 class="pb5">세인트릴리 쿠키</h2>
+                        <h4 class="pb20">성우. 송하림</h4>
+                        <p>달빛만이 빛나던 어느 밤에, 비를 맞고 조용히 피어난 순백의 백합꽃을 닮은 쿠키. 차분히 가라앉은 눈빛을 보고 있노라면 조용하고도 침착하게 세상의 진리를 탐구하고자 하는 호기심이 비친다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="cardWrap n2st poYCen clearfix">
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_ck_brave1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">COOKIE</h4>
+                  <h4 class="main">용감한</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_ck_strawberry1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">COOKIE</h4>
+                  <h4 class="main">딸기맛</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_ck_wizard1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">COOKIE</h4>
+                  <h4 class="main">마법사맛</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_ck_chili1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">COOKIE</h4>
+                  <h4 class="main">칠리맛</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_ck_custard1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">COOKIE</h4>
+                  <h4 class="main">커스터드맛</h4>
+                </div>
+              </div>
+              <div class="modalWrap">
+                <div class="modal n1st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_ck_brave2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">용감한 쿠키와 친구들</h4>
+                        <h2 class="pb5">퓨어바닐라 쿠키</h2>
+                        <h4 class="pb20">성우. 양정화</h4>
+                        <p>맨 처음 탈출을 감행한 용감한 쿠키. 마녀의 오븐 속에서 구워지고 있던 쿠키가 어떻게 해서 생명을 얻게 되었는지 알려져 있지 않다. 아마도 쿠키를 만들던 마녀가 생강가루와 생명을 주는 마법가루를 혼동했던 것 아닐까?</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n2st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_ck_strawberry2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">용감한 쿠키와 친구들</h4>
+                        <h2 class="pb5">딸기맛 쿠키</h2>
+                        <h4 class="pb20">성우. 윤미나</h4>
+                        <p>부끄러움이 많아 좋은점이 있다면 달콤한 딸기향이 쉽게 날아가지 않는다는 것. 다른 쿠키들처럼 활발하게 움직였다면, 사실 딸기가 직접 들어있지는 않고 향만 첨가되어있다는 사실을 금방 들켜버렸을지도 모른다. 하지만 젤리들을 녹여 딸기젤리로 만들 정도로 달콤상큼한 향이니 자신감을 가지기를!</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n3st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_ck_wizard2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">용감한 쿠키와 친구들</h4>
+                        <h2 class="pb5">마법사맛 쿠키</h2>
+                        <h4 class="pb20">성우. 이현진</h4>
+                        <p>정말 우연히 마녀의 마법사탕지팡이를 얻게된 이후로, 매우 특별하고도 강력한 마법을 사용할 수 있게된 쿠키. 톡톡 터지는 식감의 팝핑캔디 아이스크림을 멋스럽게 얹어, 마법사다운 맛을 더했다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n4st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_ck_chili2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">용감한 쿠키와 친구들</h4>
+                        <h2 class="pb5">칠리맛 쿠키</h2>
+                        <h4 class="pb20">성우. 윤은서</h4>
+                        <p>혀에 닿기만 해도 불처럼 매운 칠리소스가 법적인 기준보다 훨씬 많이 들어가는 바람에, 법 따위 신경쓰지 않는 독하디 독한 쿠키가 탄생했다! 가는 곳마다 시끌벅적 요란한 소동을 일으키는 이 쿠키는, 값비싸고 반짝이는 것만 보면 송두리째 훔쳐가고 먼지만 남겨버린다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n5st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_ck_custard2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">용감한 쿠키와 친구들</h4>
+                        <h2 class="pb5">커스터드맛 쿠키</h2>
+                        <h4 class="pb20">성우. 이자명</h4>
+                        <p>어느 옛날 있었던 멋지고 웅장한 왕국처럼 어엿한 자신만의 왕국을 만드는 것이 꿈인 커스터드 3세맛 쿠키. 머리 위의 커스터드가 모양이 잡히기도 전부터 왕국 이야기를 들으며 왕이 되기 위한 수행을 해왔다고 주장한다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="cardWrap n3st poYCen clearfix">
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_lg_moon1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">LEGEND</h4>
+                  <h4 class="main">달빛술사</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_lg_sea1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">LEGEND</h4>
+                  <h4 class="main">바다요정</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_lg_fire1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">LEGEND</h4>
+                  <h4 class="main">불꽃정령</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_lg_wind1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">LEGEND</h4>
+                  <h4 class="main">바람궁수</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_lg_tree1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">LEGEND</h4>
+                  <h4 class="main">천년나무</h4>
+                </div>
+              </div>
+              <div class="modalWrap">
+                <div class="modal n1st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_lg_moon2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">전설쿠키</h4>
+                        <h2 class="pb5">달빛술사 쿠키</h2>
+                        <h4 class="pb20">성우. 박선영</h4>
+                        <p>밤하늘을 담은 머리카락을 날리며 꿈꾸듯 달리는 달빛술사 쿠키. 아주 오랜 옛날 마법사들의 도시에 있던 마법사들에 의해 만들어져 마법의 비밀을 전수받았다. 지금은 마법사들이 모두 사라지고 없지만, 꿈을 꾸고 있을 때 더욱 강해지는 마법 능력으로 홀로 마법사들의 흔적을 지키고 있다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n2st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_lg_sea2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">전설쿠키</h4>
+                        <h2 class="pb5">바다요정 쿠키</h2>
+                        <h4 class="pb20">성우. 문선희</h4>
+                        <p>바다를 벗어나면 얼어버리는 차가운 저주에 걸려있던 바다요정 쿠키. 운명을 거스르려다가 얼어붙어 버렸지만, 쿠키들이 따뜻한 마음을 모아준 덕에 돌아올 수 있었다. 지금은 냉기와 물의 힘으로 쿠키들의 든든한 지원군이 되는 바다요정 쿠키.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n3st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_lg_fire2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">전설쿠키</h4>
+                        <h2 class="pb5">불꽃정령 쿠키</h2>
+                        <h4 class="pb20">성우. 박성태</h4>
+                        <p>뜨거운 용의 협곡에서 살아남으려 노력하는 쿠키들이 있는 반면, 그곳의 영험한 불의 기운으로 탄생한 전설적인 쿠키가 여기에 있다. 붉은 용의 구슬을 지니고 있는 것을 보면, 영원한 불속에 갇혔던 쿠키가 붉은 용의 호의, 또는 어떤 거래로 인해 생명을 되찾게 된 것임을 짐작할 수 있다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n4st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_lg_wind2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">전설쿠키</h4>
+                        <h2 class="pb5">바람궁수 쿠키</h2>
+                        <h4 class="pb20">성우. 손수호</h4>
+                        <p>원래는 초록을 사랑하던 바람이었다. 그의 일과는 숲과 비스킷 동물들 사이를 누비며 싱그럽고 달콤한 향을 퍼뜨리는 일이었다. 위험에 빠진 디저트 숲을 지키기 위해 신비로운 존재로부터 생명의 힘을 받아 쿠키의 형상을 갖게 되었다고 한다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n5st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_lg_tree2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">전설쿠키</h4>
+                        <h2 class="pb5">천년나무 쿠키</h2>
+                        <h4 class="pb20">성우. 안효민</h4>
+                        <p>비밀스러운 숲 속에 천년의 영광을 누리던 고목이 있었다. 대지를 돌보기 위해 땅 속 깊이 뿌리를 뻗어나가던 이 나무는, 새빨간 저주가 숲을 침범하자 스스로를 봉인하며 잎을 떨구고 잠에 들었다. 쿠키들의 정성으로 깨어난 이후, 다른 쿠키들과 함께 세상 밖을 나선 천년나무 쿠키.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="cardWrap n4st poYCen clearfix">
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_vi_ench1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">VILLAIN</h4>
+                  <h4 class="main">어둠마녀</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_vi_lico1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">VILLAIN</h4>
+                  <h4 class="main">감초맛</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_vi_poison1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">VILLAIN</h4>
+                  <h4 class="main">독버섯맛</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_vi_pome1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">VILLAIN</h4>
+                  <h4 class="main">석류맛</h4>
+                </div>
+              </div>
+              <div class="card cuP">
+                <img class="bg poCen" src="images/card.png" alt="">
+                <img class="ch poCen" src="images/ch_vi_choco1.png" alt="">
+                <div class="txtWrap poCen tac">
+                  <h4 class="sub mb5">VILLAIN</h4>
+                  <h4 class="main">다크초코</h4>
+                </div>
+              </div>
+              <div class="modalWrap">
+                <div class="modal n1st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_vi_ench2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">악당쿠키</h4>
+                        <h2 class="pb5">어둠마녀 쿠키</h2>
+                        <h4 class="pb20">성우. 남유정</h4>
+                        <p>천 년에 한 번 온다고 하는 ‘마녀들의 밤'. 각지에서 모인 마녀들이 연회를 벌이던 그곳에서 어둠마녀 쿠키가 만들어졌다고 한다. 어둠의 힘을 응축시켜 만든 검고 붉은 반죽에 독을 머금은 새빨간 석류 시럽을 뿌려 아찔하게 장식해 치명적인 매력을 품고 있다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n2st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_vi_lico2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">악당쿠키</h4>
+                        <h2 class="pb5">감초맛 쿠키</h2>
+                        <h4 class="pb20">성우. 엄상현</h4>
+                        <p>씹으면 씹을수록 검게 물들어버리는 감초에 푹 절여 만든 쿠키. 불길한 모양의 커다란 낫을 들고다니는 이 쿠키는 늘 어딘지 모르게 비열한 웃음을 지으며 킥킥대기 일쑤다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n3st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_vi_poison2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">악당쿠키</h4>
+                        <h2 class="pb5">독버섯맛 쿠키</h2>
+                        <h4 class="pb20">성우. 김율</h4>
+                        <p>아무리 먹음직스러워도, 탐스럽고 통통해도 먹어서는 안 되는 것이 있다. 어질어질 보라버섯이 바로 그것! 배가 너무도 고팠던 어느 날 독버섯을 먹어버려, 그 영향으로 멍하고 굼뜬 쿠키가 되어버린 독버섯맛 쿠키.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n4st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_vi_pome2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">악당쿠키</h4>
+                        <h2 class="pb5">석류맛 쿠키</h2>
+                        <h4 class="pb20">성우. 배정미</h4>
+                        <p>강력한 주술의 땅에서 자란 석류 한 알을 통째로 얹어 영험한 기운이 느껴지는 쿠키. 진하게 농축된 석류 시럽으로 맛을 더해 유난히도 새빨갛다. 신비로운 석류 나무를 모시던 어느 날 어둠을 따르리라는 운명을 계시받게 되는데…</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal n5st">
+                  <div class="overlay"></div>
+                  <div class="modalCont m0a clearfix">
+                    <div class="chWrap">
+                      <img class="modalBg poCen" src="images/card.png" alt="">
+                      <img class="modalCh poCen" src="images/ch_vi_choco2.png" alt="">
+                    </div>
+                    <div class="chTxtWrap">
+                      <div class="scrollWrap">
+                        <img class="chTxtBg poCen" src="images/scroll.png" alt="">
+                        <div class="xBox"></div>
+                        <h4 class="type pt55 pb5">악당쿠키</h4>
+                        <h2 class="pb5">다크초코 쿠키</h2>
+                        <h4 class="pb20">성우. 최원형</h4>
+                        <p>한때는 영웅이 되겠다는 일념 하에 겁없이 암흑의 세계로 모험을 떠났다. 그러던 어느날 금지된 딸기잼 마법검을 손에 넣게 되었고 그 순간 어둠의 기운에 사로잡혀 다시 예전의 삶으로 돌아갈 수 없게 되어버렸다.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section page4" data-anchor="m4st">
+      <img class="backCloud poXCen" src="images/page4_backCloud.webp" alt="">
+      <div class="mask">
+        <div class="storyTxt tac">
+          <p><br><br>멀고 먼 옛날…<br>
+            철과 불과 혼돈의 시대의 열기가 가라앉고<br>
+            마녀들이 구워낸 달콤하고 바삭한 피조물들이<br>
+            세상에 가득하니<br>
+            그 중에서도 가장 빛나고 고결한 ‘소울 잼’을 지닌<br>
+            다섯 쿠키들의 등장은 마치 구원과도 같았다.<br>
+            <br>
+            고귀한 지혜와 강렬한 힘에<br>
+            쿠키들이 모여들고<br>
+            영웅들은 왕이 되어<br>
+            쿠키 문명은 대 부흥의 시대를 맞는다.<br>
+            <br>
+            하지만 찬란했던 시절도 잠시<br>
+            어둠을 자처하는 자의 등장으로<br>
+            땅엔 어둠이 스며들고 하늘엔 악이 창궐해<br>
+            온 땅에 혼돈의 그림자가 드리우기 시작하는데<br>
+            <br>
+            이에 평화를 수호하는<br>
+            다섯 쿠키들이 마침내 일어서고<br>
+            해질녘의 어느 날,<br>
+            드디어 쿠키들의 운명이 걸린<br>
+            최후의 전쟁이 시작된다.<br><br><br><br><br><br></p>
+        </div>
+      </div>
+      <div class="chWrap poXCen">
+        <img class="ch white aniD08" src="images/page4_white.png" alt="">
+        <img class="ch purple aniD04" src="images/page4_purple.png" alt="">
+        <img class="ch pink aniD04" src="images/page4_pink.png" alt="">
+        <img class="ch yellow" src="images/page4_yellow.png" alt="">
+        <img class="ch orange aniD08" src="images/page4_orange.png" alt="">
+      </div>
+      <div class="container">
+        <div class="titleWrap poXCen tac">
+          <p class="enTitle">COOKIERUN KINGDOM</p>
+          <h2 class="koTitle">세계관 스토리</h2>
+        </div>
+        <div class="border">
+          <img class="leftTop" src="images/frame2.svg" alt="">
+          <img class="rightTop" src="images/frame2.svg" alt="">
+        </div>
+      </div>
+      <img class="frontCloud poXCen aniDiCl" src="images/page4_frontCloud.webp" alt="">
+    </div>
+    <div class="section page5" data-anchor="m5st">
+      <div class="container">
+        <div class="titleWrap poXCen tac">
+          <p class="enTitle">COOKIERUN KINGDOM</p>
+          <h2 class="koTitle">미디어</h2>
+        </div>
+        <div class="border">
+          <img class="leftTop" src="images/frame2.svg" alt="">
+          <img class="rightTop" src="images/frame2.svg" alt="">
+        </div>
+        <div class="content">
+          <ul class="mediaList clearfix poYCen">
+            <li class="media n1st tac pb20">
+              <img class="mediaImg" src="images/media1.jpg" alt="">
+              <img class="mediaOver poXCen" src="images/media_over.png" alt="">
+              <div class="mediaCover"></div>
+              <span>최후의 전투</span>
+            </li>
+            <li class="media n2st tac pb20">
+              <img class="mediaImg" src="images/media2.jpg" alt="">
+              <img class="mediaOver poXCen" src="images/media_over.png" alt="">
+              <div class="mediaCover"></div>
+              <span>따끈따끈한 2021 새해 덕담</span>
+            </li>
+            <li class="media n3st tac pb20">
+              <img class="mediaImg" src="images/media3.jpg" alt="">
+              <img class="mediaOver poXCen" src="images/media_over.png" alt="">
+              <div class="mediaCover"></div>
+              <span>미리보기 시리즈 - 전투편</span>
+            </li>
+            <li class="media n4st tac pb20">
+              <img class="mediaImg" src="images/media4.jpg" alt="">
+              <img class="mediaOver poXCen" src="images/media_over.png" alt="">
+              <div class="mediaCover"></div>
+              <span>미리보기 시리즈 - 캐릭터 편</span>
+            </li>
+            <li class="media n5st tac pb20">
+              <img class="mediaImg" src="images/media5.jpg" alt="">
+              <img class="mediaOver poXCen" src="images/media_over.png" alt="">
+              <div class="mediaCover"></div>
+              <span>검은가루 전쟁</span>
+            </li>
+            <li class="media n6st tac pb20">
+              <img class="mediaImg" src="images/media6.jpg" alt="">
+              <img class="mediaOver poXCen" src="images/media_over.png" alt="">
+              <div class="mediaCover"></div>
+              <span>영웅과 어둠의 시대</span>
+            </li>
+            <div class="mediaBtn poXCen tac fwb">
+              <a target="_blank" href="https://www.youtube.com/channel/UCAOTbNctDD0Hg5MG0enQpMQ">YouTube</a>
+            </div>
+          </ul>
+        </div>
+      </div>
+      <div class="modalWrap poCen">
+        <div class="modal n1st">
+          <div class="playerCover">
+            <iframe class="poCen" width="940" height="528.75" src="https://www.youtube.com/embed/c8zQXKk7DeI?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="xBox"></div>
+        </div>
+        <div class="modal n2st">
+          <div class="playerCover">
+            <iframe class="poCen" width="940" height="528.75" src="https://www.youtube.com/embed/1S-yEwkS84c" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="xBox"></div>
+        </div>
+        <div class="modal n3st">
+          <div class="playerCover">
+            <iframe class="poCen" width="940" height="528.75" src="https://www.youtube.com/embed/KPztqYEvS20" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="xBox"></div>
+        </div>
+        <div class="modal n4st">
+          <div class="playerCover">
+            <iframe class="poCen" width="940" height="528.75" src="https://www.youtube.com/embed/18k8Q7eWPL4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="xBox"></div>
+        </div>
+        <div class="modal n5st">
+          <div class="playerCover">
+            <iframe class="poCen" width="940" height="528.75" src="https://www.youtube.com/embed/the4S9AGHGE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="xBox"></div>
+        </div>
+        <div class="modal n6st">
+          <div class="playerCover">
+            <iframe class="poCen" width="940" height="528.75" src="https://www.youtube.com/embed/ENEGexiBsrA" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="xBox"></div>
+        </div>
+      </div>
+    </div>
+    <div class="section page6 fp-auto-height footer pt40 pb60 tac" data-anchor="m6st">
+      <div class="snsWrap m0a pb30 clearfix">
+        <a class="sns face" target="_blank" href="https://www.facebook.com/CRKingdomKR/"></a>
+        <a class="sns tw" target="_blank" href="https://twitter.com/CRKingdomKR"></a>
+        <a class="sns you" target="_blank" href="https://www.youtube.com/channel/UCAOTbNctDD0Hg5MG0enQpMQ"></a>
+        <a class="sns blog" target="_blank" href="https://cafe.naver.com/crkingdom"></a>
+      </div>
+      <div class="serviceWrap m0a pb20 clearfix">
+        <div class="ftBtn">
+          <a target="_blank" href="https://policy.devsisters.com/ko/terms-of-service">이용약관</a>
+        </div>
+        <div class="ftBtn long">
+          <a target="_blank" href="https://policy.devsisters.com/ko/privacy">개인정보 보호정책</a>
+        </div>
+        <div class="ftBtn">
+          <a target="_blank" href="https://cs.devsisters.com/ko/cookierun-kingdom">고객센터</a>
+        </div>
+      </div>
+      <p class="pb5">서울특별시 강남구 도산대로 327</p>
+      <p class="pb5">전화: 02-1899-3674 &nbsp;&nbsp; 팩스: 02-2148-0629</p>
+      <p class="pb30">© 2021 Devsisters Corp. All Rights Reserved.</p>
+      <svg viewBox="0 0 448 58" style="width: 7.72414em;" fill="#FFF3CD" stroke="#FFF3CD" class="footerLogo"><path d="M0 1.4h22.5c17.1 0 31.1 12.1 31.1 27.5 0 15.5-14.1 27.5-31.1 27.5H0v-55zm15.9 43h3.6c9.5 0 17.6-4.7 17.6-15.4 0-9.9-7.2-15.4-17.4-15.4H16v30.8zM73.6 13.6v9.2h18v12.1h-18v9.5h18.9v12.1H57.7V1.4h34.8v12.2zM124.7 34.9l14.9-33.5h17.2l-26.1 55.1h-12.3L92.7 1.4H110zM191.1 15.6c-2.9-2.2-6.6-3.6-10.5-3.6-2.9 0-6.8 1.5-6.8 4.6 0 3.2 4.3 4.5 7.1 5.3L185 23c8.5 2.3 15.1 6.1 15.1 15 0 5.5-1.5 11.1-6.3 14.8-4.8 3.6-11.2 5.2-17.4 5.2-7.7 0-15.2-2.3-21.5-6.3l6.8-11.6c4 3.2 8.7 5.7 14.1 5.7 3.7 0 7.7-1.7 7.7-5.5 0-4-6.3-5.4-9.7-6.3-10-2.6-16.6-4.9-16.6-15.5 0-11.2 8.9-18.5 21.1-18.5 6.2 0 13.7 1.8 19.1 4.5l-6.3 11.1zM204.3 1.4h15.9v55.1h-15.9zM260.9 15.6c-2.9-2.2-6.7-3.6-10.5-3.6-2.9 0-6.8 1.5-6.8 4.6 0 3.2 4.3 4.5 7.1 5.3l4.1 1.1c8.5 2.3 15.1 6.1 15.1 15 0 5.5-1.5 11.1-6.3 14.8-4.8 3.6-11.2 5.2-17.3 5.2-7.7 0-15.2-2.3-21.5-6.3l6.8-11.6c4 3.2 8.7 5.7 14.1 5.7 3.7 0 7.7-1.7 7.7-5.5 0-4-6.2-5.4-9.6-6.3-10-2.6-16.5-4.9-16.5-15.5C227 7.3 235.8 0 248.1 0c6.2 0 13.7 1.8 19.1 4.5l-6.3 11.1zM298.3 56.5h-15.8V13.6h-13.2V1.4h42.2v12.2h-13.2zM329.9 13.6v9.2h17.9v12.1h-17.9v9.5h18.9v12.1H314V1.4h34.8v12.2zM406.2 56.5h-19.8l-15-21.2h-.1v21.2h-15.9V1.4h23.8c12.1 0 21.3 5.2 21.3 17 0 7.6-4.7 14.2-13.4 15.6l19.1 22.5zm-34.9-30.3h1.5c5.2 0 11-.9 11-6.9s-5.8-6.9-11-6.9h-1.5v13.8z" style=""></path><path d="M439.2 15.6c-2.9-2.2-6.6-3.6-10.5-3.6-2.9 0-6.8 1.5-6.8 4.6 0 3.2 4.3 4.5 7 5.3L433 23c8.5 2.3 15.1 6.1 15.1 15 0 5.5-1.4 11.1-6.3 14.8-4.8 3.6-11.2 5.2-17.3 5.2-7.7 0-15.2-2.3-21.5-6.3l6.8-11.6c4 3.2 8.7 5.7 14.1 5.7 3.7 0 7.7-1.7 7.7-5.5 0-4-6.2-5.4-9.6-6.3-10-2.6-16.6-4.9-16.6-15.5 0-11.2 8.8-18.5 21.1-18.5 6.2 0 13.7 1.8 19.1 4.5l-6.4 11.1z"></path></svg>
+    </div>
+  </div>
+</body>
+</html>
